@@ -1,23 +1,45 @@
 import "./App.css";
-import { getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import app from "./firebase.init";
+import { useState } from "react";
 
 
 
 const auth = getAuth(app);
 
 function App() {
-  const handleOnBlur=(event)=>{
-    console.log(event.target.value);
+  const [email,setEmail]=useState('')
+  const [password,setPassword]=useState('')
+
+  const handleOnBlurEmail=(event)=>{
+    setEmail(event.target.value);
   }
-  const handleOnChange=(event)=>{
+  const handleOnBlurPassword=(event)=>{
+    setPassword(event.target.value);
+  }
+  const handleOnSubmit=(event)=>{
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+       
+      const user = userCredential.user;
+      console.log(user)
+     
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode,errorMessage)
+    
+    });
+   
+
     event.preventDefault();
   }
   return (
     <div className="App">
-      <form onChange={handleOnChange} action="" style={{margin:"50px"}}>
-        <input onBlur={handleOnBlur} style={{width:"500px", height:"20px", padding:"10px"}} type="email" name="" id="" placeholder="enter your email"  /> <br /> <br />
-        <input onBlur={handleOnBlur} style={{width:"500px", height:"20px",padding:"10px"}} type="password" name="" id="" placeholder="enter your password"/> <br />
+      <form onSubmit={handleOnSubmit} action="" style={{margin:"50px"}}>
+        <input onBlur={handleOnBlurEmail} style={{width:"500px", height:"20px", padding:"10px"}} type="email" name="" id="email" placeholder="enter your email"  /> <br /> <br />
+        <input onBlur={handleOnBlurPassword} style={{width:"500px", height:"20px",padding:"10px"}} type="password" name="" id="password" placeholder="enter your password"/> <br />
         <input style={{width:"100px", height:"20px", margin:"20px"}} type="submit" value="Sign In" />
         
       </form>
